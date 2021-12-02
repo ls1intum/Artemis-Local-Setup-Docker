@@ -13,8 +13,11 @@ jobs:
       matrix:
         include:
           - name: bitbucket
+            version: 7.17.1
           - name: bamboo
+            version: 7.2.5
           - name: jira
+            version: 8.15.0
     
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +51,7 @@ jobs:
           file: ./${{ matrix.name }}/Dockerfile
           platforms: linux/arm64/v8,linux/amd64
           push: true
-          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest
+          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest,ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}
           labels: "runnumber=${GITHUB_RUN_ID}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
