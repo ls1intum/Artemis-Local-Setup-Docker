@@ -14,10 +14,29 @@ jobs:
         include:
           - name: bitbucket
             version: 7.17.1
-          - name: bamboo
-            version: 7.2.5
+            versionSuffix: ''
+            dockerfile: Dockerfile
+            platforms: linux/arm64/v8,linux/amd64
           - name: jira
             version: 8.15.0
+            versionSuffix: ''
+            dockerfile: Dockerfile
+            platforms: linux/arm64/v8,linux/amd64
+          - name: bamboo
+            version: 7.2.5
+            versionSuffix: ''
+            dockerfile: Dockerfile
+            platforms: linux/arm64/v8,linux/amd64
+          - name: bamboo
+            version: 7.2.5
+            versionSuffix: -c
+            dockerfile: Dockerfile-c
+            platforms: linux/arm64/v8,linux/amd64
+          - name: bamboo
+            version: 7.2.5
+            versionSuffix: -swift
+            dockerfile: Dockerfile-swift
+            platforms: linux/amd64
     
     runs-on: ubuntu-latest
     steps:
@@ -48,10 +67,10 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./${{ matrix.name }}
-          file: ./${{ matrix.name }}/Dockerfile
-          platforms: linux/arm64/v8,linux/amd64
+          file: ./${{ matrix.name }}/${{ matrix.dockerfile }}
+          platforms: ${{ matrix.platforms }}
           push: true
-          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest,ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}
+          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest${{ matrix.versionSuffix }},ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}${{ matrix.versionSuffix }}
           labels: "runnumber=${GITHUB_RUN_ID}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
