@@ -4,40 +4,21 @@ on:
   push:
     branches:
       - main
-  
+
 jobs:
   buildx:
     name: Build and Push the Docker Images
-    
+
     strategy:
       matrix:
         include:
           - name: bitbucket
             version: 7.17.1
-            versionSuffix: ''
-            dockerfile: Dockerfile
-            platforms: linux/arm64/v8,linux/amd64
+          - name: bamboo
+            version: 7.2.5
           - name: jira
             version: 8.15.0
-            versionSuffix: ''
-            dockerfile: Dockerfile
-            platforms: linux/arm64/v8,linux/amd64
-          - name: bamboo
-            version: 7.2.5
-            versionSuffix: ''
-            dockerfile: Dockerfile
-            platforms: linux/arm64/v8,linux/amd64
-          - name: bamboo
-            version: 7.2.5
-            versionSuffix: -c
-            dockerfile: Dockerfile-c
-            platforms: linux/arm64/v8,linux/amd64
-          - name: bamboo
-            version: 7.2.5
-            versionSuffix: -swift
-            dockerfile: Dockerfile-swift
-            platforms: linux/amd64
-    
+
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -47,34 +28,90 @@ jobs:
         uses: docker/setup-qemu-action@master
         with:
           platforms: all
-          
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@master
-        
+
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
           key: artemis-${{ matrix.name }}
           restore-keys: |
             artemis-${{ matrix.name }}
-        
+
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        
+
       - name: Build
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./${{ matrix.name }}
-          file: ./${{ matrix.name }}/${{ matrix.dockerfile }}
-          platforms: ${{ matrix.platforms }}
+          file: ./${{ matrix.name }}/Dockerfile
+          platforms: linux/arm64/v8,linux/amd64
           push: true
-          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest${{ matrix.versionSuffix }},ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}${{ matrix.versionSuffix }}
+          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest,ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}
           labels: "runnumber=${GITHUB_RUN_ID}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-          
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-bamboo-variants:
+    name: Build and Push the Docker Images for the Bamboo variants
+    runs-on: ubuntu-latest
+    needs: [ buildx ]
+
+    strategy:
+      matrix:
+        include:
+          - name: c
+            version: 7.2.5
+            platforms: linux/arm64/v8,linux/amd64
+          - name: swift
+            version: 7.2.5
+            platforms: linux/amd64
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      - uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: artemis-bamboo-${{ matrix.name }}
+          restore-keys: |
+            artemis-bamboo-${{ matrix.name }}
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: ./bamboo/${{ matrix.name }}
+          file: ./bamboo/${{ matrix.name }}/Dockerfile
+          platforms: ${{ matrix.platforms }}
+          push: true
+          tags: ghcr.io/ls1intum/artemis-bamboo:latest-${{ matrix.name }},ghcr.io/ls1intum/artemis-bamboo:${{ matrix.version }}-${{ matrix.name }}
+          labels: "runnumber=${GITHUB_RUN_ID}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
