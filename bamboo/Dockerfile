@@ -74,6 +74,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common=0.9* \
     apt-utils=2.0.* \
     maven=3.6.* \
+    gradle \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 RUN add-apt-repository -y ppa:linuxuprising/java
@@ -84,5 +85,9 @@ RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-arm64/bin/java
 # Add file in /artemis/bin/mvn that uses the correct java version and passes all arguments to mvn
 RUN mkdir /artemis && mkdir /artemis/bin && printf '#!/bin/bash\nJAVA_HOME=/usr/lib/jvm/java-17-oracle /usr/bin/mvn "$@"\n' > /artemis/bin/mvn && chmod 777 /artemis/bin/mvn
 
+# Add the newest gradle version
+RUN add-apt-repository ppa:cwchien/gradle
+RUN apt-get update
+RUN apt upgrade gradle -y --no-install-recommends
 
 USER ${BAMBOO_USER}
