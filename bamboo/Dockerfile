@@ -87,6 +87,6 @@ RUN mkdir /artemis && mkdir /artemis/bin && printf '#!/bin/bash\nJAVA_HOME=/usr/
 # Add gradle version 7.3
 RUN add-apt-repository ppa:cwchien/gradle
 RUN apt-get update
-RUN apt-get install gradle=7.3-0ubuntu1 -y --no-install-recommends
+RUN apt-get install gradle=7.3* -y --no-install-recommends
 
 USER ${BAMBOO_USER}
