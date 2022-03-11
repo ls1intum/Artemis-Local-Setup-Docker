@@ -7,3 +7,9 @@ Currently this repository contains Dockerfiles for the following tools:
 - Bitbucket (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/)
 - Bamboo (adapted from https://bitbucket.org/atlassian-docker/docker-bamboo-server/src/7.2.5/)
 - Jira (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-jira/src/master/)
+
+
+## Update Atlassian Version 
+
+All Dockerfiles have an `ARG VERSION` parameter. The github worklow sets the version in a matrix build. To update the published packages, update the `env` in `.github/workflows/build.yml`
+

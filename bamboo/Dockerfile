@@ -40,8 +40,8 @@ RUN set -x && \
      ln -s "${JAVA_HOME}" /usr/lib/jvm/java-8-openjdk-arm64 && \
      rm -rf /var/lib/apt/lists/*
 
-ARG BAMBOO_VERSION=7.2.5
-ARG DOWNLOAD_URL=https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${BAMBOO_VERSION}.tar.gz
+ARG VERSION=8.1.3
+ARG DOWNLOAD_URL=https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${VERSION}.tar.gz
 
 RUN set -x && \
      mkdir -p ${BAMBOO_INSTALL_DIR}/lib/native && \

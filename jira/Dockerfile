@@ -27,9 +27,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends fontconfig python3 python3-jinja2 tini git \
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ARG JIRA_VERSION=8.15.0
+ARG VERSION=8.15.0
 ARG ARTEFACT_NAME=atlassian-jira-software
-ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/${ARTEFACT_NAME}-${JIRA_VERSION}.tar.gz
+ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/${ARTEFACT_NAME}-${VERSION}.tar.gz
 
 RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     && useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${JIRA_HOME} --shell /bin/bash ${RUN_USER} \

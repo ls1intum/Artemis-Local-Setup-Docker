@@ -4,6 +4,25 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: 
+    # __Future improvement:__
+    # Allow definition of versions as parameter of manual run. 
+    # Input may look like this: 
+    #    inputs:
+    #      jira_version: 
+    #        default:  8.20.6
+    #        required: true
+    #      bitbucket_version: 
+    #        default: 7.21.0
+    #        required: true
+    #      bamboo_version:
+    #        default: 8.1.3
+    #        required: true
+
+env: 
+  JIRA_VERSION: 8.20.6
+  BITBUCKET_VERSION: 7.21.0
+  BAMBOO_VERSION: 8.1.3
 
 jobs:
   buildx:
@@ -13,11 +32,11 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: 7.17.1
+            version: $BITBUCKET_VERSION
           - name: bamboo
-            version: 7.2.5
+            version: $BAMBOO_VERSION
           - name: jira
-            version: 8.15.0
+            version: $JIRA_VERSION
 
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +66,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
+          build-args: ${{ matrix.version }}
           context: ./${{ matrix.name }}
           file: ./${{ matrix.name }}/Dockerfile
           platforms: linux/arm64/v8,linux/amd64
@@ -70,10 +90,10 @@ jobs:
       matrix:
         include:
           - name: c
-            version: 7.2.5
+            version: $BAMBOO_VERSION
             platforms: linux/arm64/v8,linux/amd64
           - name: swift
-            version: 7.2.5
+            version: $BAMBOO_VERSION
             platforms: linux/amd64
 
     steps:
@@ -103,6 +123,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
+          build-args: ${{ matrix.version }}
           context: ./bamboo/${{ matrix.name }}
           file: ./bamboo/${{ matrix.name }}/Dockerfile
           platforms: ${{ matrix.platforms }}
