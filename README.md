@@ -11,5 +11,7 @@ Currently this repository contains Dockerfiles for the following tools:
 
 ## Update Atlassian Version 
 
-All Dockerfiles have an `ARG VERSION` parameter. The github worklow sets the version in a matrix build. To update the published packages, update the `env` in `.github/workflows/build.yml`
+All Dockerfiles have an `ARG VERSION` parameter. The github worklow sets the version in a matrix build. 
+
+To update the published packages, update the versions in `.github/workflows/build.yml`.
 
