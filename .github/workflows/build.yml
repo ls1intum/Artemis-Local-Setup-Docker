@@ -2,8 +2,8 @@ name: Build and Push
 
 on:
   push:
-    #    branches:
-    #- main
+    branches:
+      - main
   workflow_dispatch: 
     # __Future improvement:__
     # Allow definition of versions as parameter of manual run. 
