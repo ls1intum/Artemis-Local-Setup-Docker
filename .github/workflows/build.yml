@@ -32,11 +32,11 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: ${{ env.BITBUCKET_VERSION }}
+            version: "${{ env.BITBUCKET_VERSION }}"
           - name: bamboo
-            version: ${{ env.BAMBOO_VERSION }}
+            version: "${{ env.BAMBOO_VERSION }}"
           - name: jira
-            version: ${{ env.JIRA_VERSION }}
+            version: "${{ env.JIRA_VERSION }}"
 
     runs-on: ubuntu-latest
     steps:
@@ -90,10 +90,10 @@ jobs:
       matrix:
         include:
           - name: c
-            version: ${{ env.BAMBOO_VERSION }}
+            version: "${{ env.BAMBOO_VERSION }}"
             platforms: linux/arm64/v8,linux/amd64
           - name: swift
-            version: ${{ env.BAMBOO_VERSION }}
+            version: "${{ env.BAMBOO_VERSION }}"
             platforms: linux/amd64
 
     steps:
