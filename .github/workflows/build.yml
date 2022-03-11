@@ -19,11 +19,6 @@ on:
     #        default: 8.1.3
     #        required: true
 
-env: 
-  JIRA_VERSION: 8.20.6
-  BITBUCKET_VERSION: 7.21.0
-  BAMBOO_VERSION: 8.1.3
-
 jobs:
   buildx:
     name: Build and Push the Docker Images
@@ -32,11 +27,11 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: "${{ env.BITBUCKET_VERSION }}"
+            version: 7.21.0
           - name: bamboo
-            version: "${{ env.BAMBOO_VERSION }}"
+            version: 8.1.3
           - name: jira
-            version: "${{ env.JIRA_VERSION }}"
+            version: 8.20.6
 
     runs-on: ubuntu-latest
     steps:
@@ -90,10 +85,10 @@ jobs:
       matrix:
         include:
           - name: c
-            version: "${{ env.BAMBOO_VERSION }}"
+            version: 8.1.3
             platforms: linux/arm64/v8,linux/amd64
           - name: swift
-            version: "${{ env.BAMBOO_VERSION }}"
+            version: 8.1.3
             platforms: linux/amd64
 
     steps:
