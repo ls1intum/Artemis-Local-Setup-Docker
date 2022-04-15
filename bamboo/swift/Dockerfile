@@ -1,4 +1,5 @@
-FROM ghcr.io/ls1intum/artemis-bamboo:7.2.5
+ARG VERSION=8.1.3
+FROM ghcr.io/ls1intum/artemis-bamboo:${VERSION}
 
 LABEL description="Bamboo pre-configured for Artemis, pre-installed with Swift"
 
