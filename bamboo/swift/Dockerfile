@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
     libxml2-dev
 
 # Install Swift by copying relevant files
-COPY --from=swift:latest /usr /usr
+COPY --from=swift:focal /usr /usr
 
 # Install SwiftLint
 RUN git clone --branch master https://github.com/realm/SwiftLint.git
