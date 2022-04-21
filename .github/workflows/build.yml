@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   generate-build-matrix:
@@ -85,6 +88,7 @@ jobs:
             artemis-${{ matrix.name }}
 
       - name: Log into registry
+        if: github.event_name != 'pull_request'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build
@@ -95,7 +99,7 @@ jobs:
           file: ./${{ matrix.name }}/Dockerfile
           build-args: VERSION=${{ matrix.version }}
           platforms: linux/arm64/v8,linux/amd64
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:latest,ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:${{ matrix.version }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -142,6 +146,7 @@ jobs:
             artemis-bamboo-${{ matrix.name }}
 
       - name: Log into registry
+        if: github.event_name != 'pull_request'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build
@@ -152,7 +157,7 @@ jobs:
           file: ./bamboo/${{ matrix.name }}/Dockerfile
           build-args: VERSION=${{ matrix.version }}
           platforms: ${{ matrix.platforms }}
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:latest-${{ matrix.name }},ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:${{ matrix.version }}-${{ matrix.name }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=local,src=/tmp/.buildx-cache
