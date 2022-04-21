@@ -43,16 +43,15 @@ RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.gi
 ARG VERSION
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/stash/downloads/atlassian-bitbucket-${VERSION}.tar.gz
 
-RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
-    && useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${BITBUCKET_HOME} --shell /bin/bash ${RUN_USER} \
-    && echo PATH=$PATH > /etc/environment \
-    \
-    && mkdir -p                                     ${BITBUCKET_INSTALL_DIR} \
-    && curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${BITBUCKET_INSTALL_DIR}" \
-    && chmod -R "u=rwX,g=rX,o=rX"                   ${BITBUCKET_INSTALL_DIR}/ \
-    && chown -R root.                               ${BITBUCKET_INSTALL_DIR}/ \
-    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs \
-    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_HOME}
+RUN groupadd --gid ${RUN_GID} ${RUN_GROUP}
+RUN useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${BITBUCKET_HOME} --shell /bin/bash ${RUN_USER}
+RUN echo PATH=$PATH > /etc/environment
+RUN mkdir -p                                     ${BITBUCKET_INSTALL_DIR}
+RUN curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${BITBUCKET_INSTALL_DIR}"
+RUN chmod -R "u=rwX,g=rX,o=rX"                   ${BITBUCKET_INSTALL_DIR}/
+RUN chown -R root.                               ${BITBUCKET_INSTALL_DIR}/
+RUN chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs
+RUN chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_HOME}
 
 VOLUME ["${BITBUCKET_HOME}"]
 
