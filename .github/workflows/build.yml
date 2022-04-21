@@ -23,6 +23,36 @@ jobs:
           run: |
             bash ./generate_build_matrix.sh
 
+  check-matrix:
+    runs-on: ubuntu-latest
+    needs: generate-build-matrix
+    steps:
+      - name: Install json2yaml
+        run: |
+          sudo npm install -g json2yaml
+
+      - name: Check matrix definition
+        run: |
+          echo -e "\u001b[32m** Generated matrices: **\u001b[0m"
+          echo -e "################################"
+          echo -e "\u001b[35mBase images:\u001b[0m"
+          matrix='${{ needs.generate-build-matrix.outputs.matrix }}'
+          echo -e "\u001b[36m[JSON]:\u001b[0m"
+          echo -e $matrix | jq .
+          echo -e "\u001b[36m[YAML]:\u001b[0m"
+          echo -e $matrix | json2yaml
+          echo -e "################################"
+          echo -e "\u001b[35mBamboo variants images:"
+          matrix='${{ needs.generate-build-matrix.outputs.matrix_variants }}'
+          echo -e "\u001b[36m[JSON]:\u001b[0m"
+          echo -e $matrix | jq .
+          echo -e "\u001b[36m[YAML]:\u001b[0m"
+          echo -e $matrix | json2yaml
+          echo -e "################################"
+          echo -e "\u001b[32m** Build flags: **\u001b[0m"
+          echo -e '\u001b[35mShould build base images:\u001b[0m ${{ needs.generate-build-matrix.outputs.build_base_images }}'
+          echo -e '\u001b[35mShould build variants:\u001b[0m ${{ needs.generate-build-matrix.outputs.build_bamboo_variants }}'
+
   buildx:
     name: Build and Push the Docker Images
     runs-on: ubuntu-latest
