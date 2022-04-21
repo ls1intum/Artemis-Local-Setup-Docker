@@ -14,11 +14,9 @@ RUN apt-get install -y --no-install-recommends \
 COPY --from=swift:latest /usr /usr
 
 # Install SwiftLint
-RUN git clone --branch master https://github.com/realm/SwiftLint.git && \
-    cd SwiftLint && \
-    swift build --configuration release -Xswiftc -static-stdlib && \
-    mv $(swift build --configuration release -Xswiftc -static-stdlib --show-bin-path)/swiftlint /usr/bin && \
-    cd .. && \
-    rm -rf SwiftLint
+RUN git clone --branch master https://github.com/realm/SwiftLint.git
+RUN cd SwiftLint && swift build --configuration release -Xswiftc -static-stdlib
+RUN cd SwiftLint && mv $(swift build --configuration release -Xswiftc -static-stdlib --show-bin-path)/swiftlint /usr/bin
+RUN rm -rf SwiftLint
 
 USER ${BAMBOO_USER}
