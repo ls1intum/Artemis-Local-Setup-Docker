@@ -96,7 +96,7 @@ jobs:
           build-args: VERSION=${{ matrix.version }}
           platforms: linux/arm64/v8,linux/amd64
           push: true
-          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest,ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}
+          tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:latest,ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:${{ matrix.version }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -153,7 +153,7 @@ jobs:
           build-args: VERSION=${{ matrix.version }}
           platforms: ${{ matrix.platforms }}
           push: true
-          tags: ghcr.io/ls1intum/artemis-bamboo:latest-${{ matrix.name }},ghcr.io/ls1intum/artemis-bamboo:${{ matrix.version }}-${{ matrix.name }}
+          tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:latest-${{ matrix.name }},ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:${{ matrix.version }}-${{ matrix.name }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
