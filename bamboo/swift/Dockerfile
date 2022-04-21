@@ -11,6 +11,9 @@ RUN apt-get install -y --no-install-recommends \
     libxml2-dev
 
 # Install Swift by copying relevant files
+
+# TODO: Maybe build Swift image from source?
+# https://github.com/apple/swift-docker/blob/main/5.6/ubuntu/20.04/Dockerfile
 COPY --from=swift:focal /usr /usr
 
 # Install SwiftLint
