@@ -21,6 +21,23 @@ on:
 
 
 jobs:
+  generate-build-matrix:
+      runs-on: ubuntu-latest
+      outputs:
+        matrix: ${{ steps.generate.outputs.matrix }}
+        matrix_variants: ${{ steps.generate.outputs.matrix_variants }}
+        build_base_images: ${{ steps.generate.outputs.build_base_images }}
+        build_bamboo_variants: ${{ steps.generate.outputs.build_bamboo_variants }} 
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 2
+        - name: generate
+          id: generate
+          run: |
+            bash ./generate_build_matrix.sh
+
   buildx:
     name: Build and Push the Docker Images
 
