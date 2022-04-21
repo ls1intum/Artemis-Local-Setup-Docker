@@ -4,8 +4,6 @@ FROM $BASE_IMAGE
 LABEL maintainer="dc-deployments@atlassian.com"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
-ARG VERSION=7.17.1
-
 ENV APP_NAME                                        bitbucket
 ENV RUN_USER                                        bitbucket
 ENV RUN_GROUP                                       bitbucket
@@ -42,6 +40,7 @@ RUN ./make-git.sh
 RUN git clone https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/ ./git-repo
 RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.git ./shared-components
 
+ARG VERSION
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/stash/downloads/atlassian-bitbucket-${VERSION}.tar.gz
 
 RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
