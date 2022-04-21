@@ -119,6 +119,12 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: [ buildx, generate-build-matrix ]
+    # Yes, the `always() &&` is needed in the `if` statement` below here.
+    # There is an open issue about this on the GitHub runner's repository: https://github.com/actions/runner/issues/491
+    #
+    # TL;DR: If a job specified under `needs` is skipped, we would not continue here.
+    # This means, if we want to build just a bamboo variant while skipping the base image, the build of the variant would be skipped.
+    # Using `always() &&` here continues though.
     if: |
       always() &&
       !contains(needs.*.result, 'cancelled') &&
