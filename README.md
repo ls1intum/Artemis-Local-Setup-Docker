@@ -8,6 +8,8 @@ Currently this repository contains Dockerfiles for the following tools:
 - __Bitbucket__ (adapted from <https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/>)
 - __Bamboo__ (adapted from <https://bitbucket.org/atlassian-docker/docker-bamboo-server/src/7.2.5/>)
 - __Jira__ (adapted from <https://bitbucket.org/atlassian-docker/docker-atlassian-jira/src/master/>)
+- __GitLab__ (adapted from <https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/docker>)
+- __Jenkins__ (adapted from <https://github.com/jenkinsci/docker>)
 
 ## Building the images
 
