@@ -1,0 +1,4 @@
+BUILD=yes
+RELEASE_PACKAGE=gitlab-ce
+RELEASE_VERSION=14.9.3-ce.0
+DOWNLOAD_URL=https://packages.gitlab.com/gitlab/gitlab-ce/packages/ubuntu/focal/
