@@ -1,2 +1,6 @@
 BUILD=yes
-JENKINS_VERSION=2.332.1
+
+# ALl versions can be found here:
+# https://repo.jenkins-ci.org/artifactory/public/org/jenkins-ci/main/jenkins-war/
+
+JENKINS_VERSION=2.344
