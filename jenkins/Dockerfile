@@ -78,6 +78,8 @@ ENV VERSION ${VERSION}
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${VERSION}/jenkins-war-${VERSION}.war
 
+RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war
+
 ENV JENKINS_UC https://updates.jenkins.io
 ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
 ENV JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals
