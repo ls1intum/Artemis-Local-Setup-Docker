@@ -166,8 +166,8 @@ jobs:
           context: ./${{ matrix.name }}
           file: ./${{ matrix.name }}/Dockerfile
           build-args: |
-            - VERSION=${{ matrix.version }}
-            - OWNER=${{ github.event.repository.owner.login }}
+            VERSION=${{ matrix.version }}
+            OWNER=${{ github.event.repository.owner.login }}
           platforms: ${{ matrix.platforms }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:latest,ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:${{ matrix.version }}
