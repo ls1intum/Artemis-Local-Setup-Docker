@@ -13,14 +13,12 @@ for DIR in ${CHANGED_DIRS}; do
         if [[ "${DO_BUILD}" != "yes" ]]; then
             echo "Skipping ${DIR} because BUILD is not set to yes."
         elif [[ "${DIR}" != *"bamboo-c"* && "${DIR}" != *"bamboo-swift"* && "${DIR}" != *"jenkins-swift"* ]]; then # Handle C & Swift different.
-            NAME=$DIR
-            VERSION=$(grep "VERSION=" "${NAME}"/RELEASE | awk -F '=' '{ print $2}')
-            MATRIX_BASE_INCLUDE+="{\"name\": \"${NAME}\", \"version\": \"${VERSION}\"}"
+            VERSION=$(grep "VERSION=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
+            MATRIX_BASE_INCLUDE+="{\"name\": \"${DIR}\", \"version\": \"${VERSION}\"}"
         elif [[ "${DIR}" = *"bamboo-"* || "${DIR}" = *"jenkins-swift"* ]]; then
-            NAME=$(echo ${DIR} | awk -F '/' '{ print $2}')
             VERSION=$(grep "VERSION=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
             PLATFORMS=$(grep "PLATFORMS=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
-            MATRIX_VARIANTS_INCLUDE+="{\"name\": \"${NAME}\", \"version\": \"${VERSION}\", \"platforms\": \"${PLATFORMS}\"}"
+            MATRIX_VARIANTS_INCLUDE+="{\"name\": \"${DIR}\", \"version\": \"${VERSION}\", \"platforms\": \"${PLATFORMS}\"}"
         fi
     else
         echo "Skipping directory \"${DIR}\" because it does not contain a RELEASE file."
