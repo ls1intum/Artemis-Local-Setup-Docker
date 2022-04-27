@@ -7,18 +7,21 @@ LABEL description="Jenkins with swift libraries pre-installed for Artemis"
 USER root
 
 RUN apt update
-
-# Install Swift and SwiftLint (adapted from norionomura/swift and norionomura/swiftlint)
-ENV SWIFT_BRANCH swift-5.3.1-release
-ENV SWIFT_PLATFORM ubuntu18.04
-ENV SWIFT_VERSION 5.3.1-RELEASE
 RUN apt-get install -y --no-install-recommends \
     gnupg2 \
     libcurl4-openssl-dev \
     libxml2-dev \
+    libncurses5 \
     && rm -r /var/lib/apt/lists/*
+
+# Install Swift and SwiftLint (adapted from norionomura/swift and norionomura/swiftlint)
+ENV SWIFT_BRANCH swift-5.5-release
+ENV SWIFT_PLATFORM ubuntu18.04
+ENV SWIFT_VERSION 5.5-RELEASE
+
 # Install Swift keys
 RUN curl -L https://swift.org/keys/all-keys.asc | gpg2 --import -
+
 # Install Swift toolchain
 # -> https://swift.org/builds/swift-5.3.1-release/ubuntu1804/swift-5.3.1-RELEASE/swift-5.3.1-RELEASE-ubuntu18.04.tar.gz
 RUN SWIFT_ARCHIVE_NAME=swift-$SWIFT_VERSION-$SWIFT_PLATFORM && \
