@@ -15,6 +15,8 @@ RUN apt-get update -q \
       openssh-server \
       tzdata \
       wget \
+      libatomic1 \
+      jq \
     && rm -rf /var/lib/apt/lists/*
 
 # Use BusyBox
@@ -53,6 +55,9 @@ EXPOSE 443 80 22
 
 # Define data volumes
 VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+
+# Prevent force password reset on next login when password is changed through through API
+RUN sed -i '/^.*user_params\[:password_expires_at\] = Time.current if admin_making_changes_for_another_user.*$/s/^/#/' /opt/gitlab/embedded/service/gitlab-rails/lib/api/users.rb
 
 # Wrapper to handle signal, trigger runit and reconfigure GitLab
 CMD ["/assets/wrapper"]

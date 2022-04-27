@@ -1,6 +1,6 @@
 FROM eclipse-temurin:11.0.14.1_1-jdk-focal
 
-LABEL description="Jenkins for Artemis"
+LABEL description="Jenkins with plugins pre-installed for Artemis"
 
 RUN jlink \
          --add-modules ALL-MODULE-PATH \
@@ -101,6 +101,12 @@ ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
 RUN cp -R /javaruntime $JAVA_HOME
 
+USER root
+
+# Install third-party plugins required by Artemis
+COPY assets/plugins.yml /usr/share/jenkins/ref/plugins.yml
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.yml
+
 USER ${user}
 
 COPY assets/jenkins-support /usr/local/bin/jenkins-support
@@ -111,13 +117,3 @@ ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
 
 # from a derived Dockerfile, can use `RUN install-plugins.sh active.txt` to setup $REF/plugins from a support bundle
 COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
-
-# metadata labels
-LABEL \
-    org.opencontainers.image.vendor="Jenkins project" \
-    org.opencontainers.image.title="Official Jenkins Docker image" \
-    org.opencontainers.image.description="The Jenkins Continuous Integration and Delivery server" \
-    org.opencontainers.image.version="${VERSION}" \
-    org.opencontainers.image.url="https://www.jenkins.io/" \
-    org.opencontainers.image.source="https://github.com/jenkinsci/docker" \
-    org.opencontainers.image.licenses="MIT"
