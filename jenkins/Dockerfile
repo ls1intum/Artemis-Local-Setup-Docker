@@ -101,12 +101,6 @@ ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
 RUN cp -R /javaruntime $JAVA_HOME
 
-USER root
-
-# Install third-party plugins required by Artemis
-COPY assets/plugins.yml /usr/share/jenkins/ref/plugins.yml
-RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.yml
-
 USER ${user}
 
 COPY assets/jenkins-support /usr/local/bin/jenkins-support
@@ -117,3 +111,11 @@ ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
 
 # from a derived Dockerfile, can use `RUN install-plugins.sh active.txt` to setup $REF/plugins from a support bundle
 COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
+
+USER root
+
+# Install third-party plugins required by Artemis
+COPY assets/plugins.yml /usr/share/jenkins/ref/plugins.yml
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.yml
+
+USER ${user}
