@@ -12,11 +12,11 @@ for DIR in ${CHANGED_DIRS}; do
         DO_BUILD=$(grep "BUILD=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
         if [[ "${DO_BUILD}" != "yes" ]]; then
             echo "Skipping ${DIR} because BUILD is not set to yes."
-        elif [[ "${DIR}" != *"bamboo/c"* && "${DIR}" != *"bamboo/swift"* ]]; then # Skip C & Swift. They will only be re-built, if the Dockerfile for bamboo is changed.
+        elif [[ "${DIR}" != *"bamboo-c"* && "${DIR}" != *"bamboo-swift"* && "${DIR}" != *"jenkins-swift"* ]]; then # Handle C & Swift different.
             NAME=$DIR
             VERSION=$(grep "VERSION=" "${NAME}"/RELEASE | awk -F '=' '{ print $2}')
             MATRIX_BASE_INCLUDE+="{\"name\": \"${NAME}\", \"version\": \"${VERSION}\"}"
-        elif [[ "${DIR}" = *"bamboo/"* ]]; then
+        elif [[ "${DIR}" = *"bamboo-"* || "${DIR}" = *"jenkins-swift"* ]]; then
             NAME=$(echo ${DIR} | awk -F '/' '{ print $2}')
             VERSION=$(grep "VERSION=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
             PLATFORMS=$(grep "PLATFORMS=" "${DIR}"/RELEASE | awk -F '=' '{ print $2}')
@@ -42,12 +42,12 @@ if [[ "${MATRIX_BASE_INCLUDE}" != "[]" ]]; then
     BUILD_BASE_IMAGES="yes"
 fi
 
-BUILD_BAMBOO_VARIANTS="no"
+BUILD_VARIANTS="no"
 if [[ "${MATRIX_VARIANTS_INCLUDE}" != "[]" ]]; then
-    BUILD_BAMBOO_VARIANTS="yes"
+    BUILD_VARIANTS="yes"
 fi
 
 echo "::set-output name=matrix::${MATRIX_BASE}"
 echo "::set-output name=matrix_variants::${MATRIX_VARIANTS}"
 echo "::set-output name=build_base_images::${BUILD_BASE_IMAGES}"
-echo "::set-output name=build_bamboo_variants::${BUILD_BAMBOO_VARIANTS}"
+echo "::set-output name=build_variants::${BUILD_VARIANTS}"

@@ -15,7 +15,7 @@ jobs:
         matrix: ${{ steps.generate.outputs.matrix }}
         matrix_variants: ${{ steps.generate.outputs.matrix_variants }}
         build_base_images: ${{ steps.generate.outputs.build_base_images }}
-        build_bamboo_variants: ${{ steps.generate.outputs.build_bamboo_variants }} 
+        build_variants: ${{ steps.generate.outputs.build_variants }} 
       steps:
         - name: Checkout
           uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
           echo -e "\u001b[36m[YAML]:\u001b[0m"
           echo -e $matrix | json2yaml
           echo -e "################################"
-          echo -e "\u001b[35mBamboo variants images:"
+          echo -e "\u001b[35mVariants images:"
           matrix='${{ needs.generate-build-matrix.outputs.matrix_variants }}'
           echo -e "\u001b[36m[JSON]:\u001b[0m"
           echo -e $matrix | jq .
@@ -54,7 +54,7 @@ jobs:
           echo -e "################################"
           echo -e "\u001b[32m** Build flags: **\u001b[0m"
           echo -e '\u001b[35mShould build base images:\u001b[0m ${{ needs.generate-build-matrix.outputs.build_base_images }}'
-          echo -e '\u001b[35mShould build variants:\u001b[0m ${{ needs.generate-build-matrix.outputs.build_bamboo_variants }}'
+          echo -e '\u001b[35mShould build variants:\u001b[0m ${{ needs.generate-build-matrix.outputs.build_variants }}'
 
   buildx:
     name: Build and Push the Docker Images
@@ -114,8 +114,8 @@ jobs:
           echo "size is"
           du -hcs  /tmp/.buildx-cache
 
-  build-bamboo-variants:
-    name: Build and Push the Docker Images for the Bamboo variants
+  build-variants:
+    name: Build and Push the Docker Images for the variants
     runs-on: ubuntu-latest
 
     needs: [ buildx, generate-build-matrix ]
@@ -123,13 +123,13 @@ jobs:
     # There is an open issue about this on the GitHub runner's repository: https://github.com/actions/runner/issues/491
     #
     # TL;DR: If a job specified under `needs` is skipped, we would not continue here.
-    # This means, if we want to build just a bamboo variant while skipping the base image, the build of the variant would be skipped.
+    # This means, if we want to build just a variant while skipping the base image, the build of the variant would be skipped.
     # Using `always() &&` here continues though.
     if: |
       always() &&
       !contains(needs.*.result, 'cancelled') &&
       !contains(needs.*.result, 'failure') &&
-      needs.generate-build-matrix.outputs.build_bamboo_variants == 'yes'
+      needs.generate-build-matrix.outputs.build_variants == 'yes'
 
     strategy:
       fail-fast: false
@@ -151,9 +151,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: artemis-bamboo-${{ matrix.name }}
+          key: artemis-${{ matrix.name }}
           restore-keys: |
-            artemis-bamboo-${{ matrix.name }}
+            artemis-${{ matrix.name }}
 
       - name: Log into registry
         if: github.event_name != 'pull_request'
@@ -163,12 +163,14 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
-          context: ./bamboo/${{ matrix.name }}
-          file: ./bamboo/${{ matrix.name }}/Dockerfile
-          build-args: VERSION=${{ matrix.version }}
+          context: ./${{ matrix.name }}
+          file: ./${{ matrix.name }}/Dockerfile
+          build-args: |
+            - VERSION=${{ matrix.version }}
+            - OWNER=${{ github.event.repository.owner.login }}
           platforms: ${{ matrix.platforms }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:latest-${{ matrix.name }},ghcr.io/${{ github.event.repository.owner.login }}/artemis-bamboo:${{ matrix.version }}-${{ matrix.name }}
+          tags: ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:latest,ghcr.io/${{ github.event.repository.owner.login }}/artemis-${{ matrix.name }}:${{ matrix.version }}
           labels: runnumber=${{ github.run_id }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
