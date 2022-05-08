@@ -1,5 +1,6 @@
-ARG VERSION=8.1.3
-FROM ghcr.io/ls1intum/artemis-bamboo:${VERSION}
+ARG VERSION
+ARG OWNER
+FROM ghcr.io/${OWNER}/artemis-bamboo:${VERSION}
 
 LABEL description="Bamboo pre-configured for Artemis and C"
 

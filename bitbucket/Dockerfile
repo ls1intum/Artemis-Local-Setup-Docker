@@ -4,8 +4,6 @@ FROM $BASE_IMAGE
 LABEL maintainer="dc-deployments@atlassian.com"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
-ARG VERSION=7.17.1
-
 ENV APP_NAME                                        bitbucket
 ENV RUN_USER                                        bitbucket
 ENV RUN_GROUP                                       bitbucket
@@ -42,18 +40,20 @@ RUN ./make-git.sh
 RUN git clone https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/ ./git-repo
 RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.git ./shared-components
 
+ARG VERSION
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/stash/downloads/atlassian-bitbucket-${VERSION}.tar.gz
 
-RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
-    && useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${BITBUCKET_HOME} --shell /bin/bash ${RUN_USER} \
-    && echo PATH=$PATH > /etc/environment \
-    \
-    && mkdir -p                                     ${BITBUCKET_INSTALL_DIR} \
-    && curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${BITBUCKET_INSTALL_DIR}" \
-    && chmod -R "u=rwX,g=rX,o=rX"                   ${BITBUCKET_INSTALL_DIR}/ \
-    && chown -R root.                               ${BITBUCKET_INSTALL_DIR}/ \
-    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs \
-    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_HOME}
+RUN groupadd --gid ${RUN_GID} ${RUN_GROUP}
+RUN useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${BITBUCKET_HOME} --shell /bin/bash ${RUN_USER}
+RUN echo PATH=$PATH > /etc/environment
+RUN mkdir -p                                     ${BITBUCKET_INSTALL_DIR}
+RUN curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${BITBUCKET_INSTALL_DIR}"
+RUN chmod -R "u=rwX,g=rX,o=rX"                   ${BITBUCKET_INSTALL_DIR}/
+RUN chown -R root.                               ${BITBUCKET_INSTALL_DIR}/
+RUN chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_HOME}
+
+RUN if [ -d ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs ]; then chown -R ${RUN_USER}:${RUN_GROUP} ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs ; fi
+RUN if [ -d ${BITBUCKET_INSTALL_DIR}/opensearch/logs ]; then chown -R ${RUN_USER}:${RUN_GROUP} ${BITBUCKET_INSTALL_DIR}/opensearch/logs ; fi
 
 VOLUME ["${BITBUCKET_HOME}"]
 
