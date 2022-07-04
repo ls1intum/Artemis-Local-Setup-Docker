@@ -31,6 +31,8 @@ jobs:
             version: 7.21.0
           - name: bamboo
             version: 8.1.3
+          - name: bamboo-build-agent
+            version: 8.1.3
           - name: jira
             version: 8.20.6
 
