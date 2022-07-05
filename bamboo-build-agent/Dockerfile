@@ -63,3 +63,5 @@ RUN cp ./git-repo/probe-readiness.sh /
 RUN cp ./shared-components/image/entrypoint_helpers.py  /
 RUN cp -r ./shared-components/support                      /opt/atlassian/support
 RUN cp -r ./git-repo/config/                               /opt/atlassian/etc/
+
+COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/

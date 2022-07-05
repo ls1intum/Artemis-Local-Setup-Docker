@@ -4,9 +4,10 @@ The main reason for the existance of this repository is that the official Docker
 
 Currently this repository contains Dockerfiles for the following tools:
 
-- Bitbucket (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/)
-- Bamboo (adapted from https://bitbucket.org/atlassian-docker/docker-bamboo-server/src/7.2.5/)
-- Jira (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-jira/src/master/)
+- Bitbucket (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server)
+- Bamboo (adapted from https://bitbucket.org/atlassian-docker/docker-bamboo-server)
+- Bamboo Build Agent (adapted from https://bitbucket.org/atlassian-docker/docker-bamboo-agent-base)
+- Jira (adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-jira)
 
 
 ## Update Atlassian Version 
