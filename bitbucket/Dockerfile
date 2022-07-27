@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=eclipse-temurin:11
 FROM $BASE_IMAGE
 
-LABEL maintainer="dc-deployments@atlassian.com"
+LABEL maintainer="artemis.in@tum.de"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
 ARG VERSION=7.17.1

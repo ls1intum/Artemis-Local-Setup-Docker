@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=adoptopenjdk:8-jdk-hotspot-focal
 FROM $BASE_IMAGE
 
-LABEL maintainer="dc-deployments@atlassian.com"
+LABEL maintainer="artemis.in@tum.de"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
 ENV APP_NAME                                bamboo
