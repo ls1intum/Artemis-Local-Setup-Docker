@@ -25,6 +25,7 @@ jobs:
     name: Build and Push the Docker Images
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: bitbucket
