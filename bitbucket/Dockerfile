@@ -52,7 +52,7 @@ RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     && curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${BITBUCKET_INSTALL_DIR}" \
     && chmod -R "u=rwX,g=rX,o=rX"                   ${BITBUCKET_INSTALL_DIR}/ \
     && chown -R root.                               ${BITBUCKET_INSTALL_DIR}/ \
-    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_INSTALL_DIR}/elasticsearch/logs \
+    && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_INSTALL_DIR}/*search/logs \
     && chown -R ${RUN_USER}:${RUN_GROUP}            ${BITBUCKET_HOME}
 
 VOLUME ["${BITBUCKET_HOME}"]
