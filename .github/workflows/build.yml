@@ -35,7 +35,7 @@ jobs:
           - name: bamboo-build-agent
             version: 8.1.8
           - name: jira
-            version: 8.20.10
+            version: 8.20.11
 
     runs-on: ubuntu-latest
     steps:
