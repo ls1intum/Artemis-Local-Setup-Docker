@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 LABEL maintainer="dc-deployments@atlassian.com"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
-ARG VERSION=7.17.1
+ARG VERSION=7.21.3
 
 ENV APP_NAME                                        bitbucket
 ENV RUN_USER                                        bitbucket
