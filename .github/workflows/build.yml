@@ -29,11 +29,11 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: 7.21.3
+            version: 7.21.4
           - name: bamboo
-            version: 8.1.8
+            version: 8.2.5
           - name: bamboo-build-agent
-            version: 8.1.8
+            version: 8.2.5
           - name: jira
             version: 8.20.11
 
