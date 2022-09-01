@@ -32,7 +32,7 @@ RUN mkdir -p ${MAVEN_HOME} \
     && curl -L --silent http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xz --strip-components=1 -C "${MAVEN_HOME}" \
     && ln -s ${MAVEN_HOME}/bin/mvn /usr/local/bin/mvn
 
-ARG VERSION=8.1.3
+ARG VERSION=8.2.5
 ARG DOWNLOAD_URL=https://packages.atlassian.com/mvn/maven-atlassian-external/com/atlassian/bamboo/atlassian-bamboo-agent-installer/${VERSION}/atlassian-bamboo-agent-installer-${VERSION}.jar
 
 RUN git clone https://bitbucket.org/atlassian-docker/docker-bamboo-agent-base.git ./git-repo

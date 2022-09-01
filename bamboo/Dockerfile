@@ -40,7 +40,7 @@ RUN set -x && \
      ln -s "${JAVA_HOME}" /usr/lib/jvm/java-8-openjdk-arm64 && \
      rm -rf /var/lib/apt/lists/*
 
-ARG VERSION=8.1.8
+ARG VERSION=8.2.5
 ARG DOWNLOAD_URL=https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${VERSION}.tar.gz
 
 RUN set -x && \
