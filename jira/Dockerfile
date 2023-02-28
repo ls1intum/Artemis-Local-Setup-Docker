@@ -27,7 +27,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends fontconfig python3 python3-jinja2 tini git \
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION=9.4.0
+ARG VERSION=9.4.3
 ARG ARTEFACT_NAME=atlassian-jira-software
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/${ARTEFACT_NAME}-${VERSION}.tar.gz
 

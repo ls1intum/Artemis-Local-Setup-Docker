@@ -35,7 +35,7 @@ jobs:
           - name: bamboo-build-agent
             version: 9.2.1
           - name: jira
-            version: 9.4.0
+            version: 9.4.3
 
     runs-on: ubuntu-latest
     steps:
