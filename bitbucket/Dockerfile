@@ -1,3 +1,5 @@
+# Adapted from https://bitbucket.org/atlassian-docker/docker-atlassian-bitbucket-server/src/master/Dockerfile
+
 ARG BASE_IMAGE=eclipse-temurin:11
 FROM $BASE_IMAGE
 
