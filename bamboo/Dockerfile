@@ -55,7 +55,7 @@ RUN set -x && \
 VOLUME ["${BAMBOO_HOME}"]
 WORKDIR $BAMBOO_HOME
 
-RUN git clone https://bitbucket.org/atlassian-docker/docker-bamboo-server.git ./git-repo
+RUN git clone --branch 7.2.5 https://bitbucket.org/atlassian-docker/docker-bamboo-server.git ./git-repo
 RUN cp ./git-repo/entrypoint.sh /entrypoint.sh
 RUN chown ${BAMBOO_USER}:${BAMBOO_GROUP} /entrypoint.sh
 
