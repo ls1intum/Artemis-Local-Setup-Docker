@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=adoptopenjdk/openjdk11
+ARG BASE_IMAGE=eclipse-temurin:11
 FROM $BASE_IMAGE
 
 LABEL maintainer="dc-deployments@atlassian.com"
@@ -28,8 +28,9 @@ RUN apt-get update \
     && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 ARG VERSION=9.4.3
+ARG JIRA_VERSION=${VERSION}
 ARG ARTEFACT_NAME=atlassian-jira-software
-ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/${ARTEFACT_NAME}-${VERSION}.tar.gz
+ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/${ARTEFACT_NAME}-${JIRA_VERSION}.tar.gz
 
 RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     && useradd --uid ${RUN_UID} --gid ${RUN_GID} --home-dir ${JIRA_HOME} --shell /bin/bash ${RUN_USER} \
@@ -38,11 +39,12 @@ RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     \
     && curl -Ls ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${JIRA_INSTALL_DIR}" \
     \
-    && chmod -R "u=rwX,g=rX,o=rX"                      ${JIRA_INSTALL_DIR}/ \
+    && chmod -R "u=rwX,g=rX,o=rX"                   ${JIRA_INSTALL_DIR}/ \
     && chown -R root.                               ${JIRA_INSTALL_DIR}/ \
     && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/logs \
     && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/temp \
     && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/work \
+    && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/conf \
     \
     && sed -i -e 's/^JVM_SUPPORT_RECOMMENDED_ARGS=""$/: \${JVM_SUPPORT_RECOMMENDED_ARGS:=""}/g' ${JIRA_INSTALL_DIR}/bin/setenv.sh \
     && sed -i -e 's/^JVM_\(.*\)_MEMORY="\(.*\)"$/: \${JVM_\1_MEMORY:=\2}/g' ${JIRA_INSTALL_DIR}/bin/setenv.sh \
@@ -52,10 +54,11 @@ RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     && chown ${RUN_USER}:${RUN_GROUP}               /etc/container_id \
     && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_HOME}
 
-VOLUME ["${JIRA_HOME}"]
 
 RUN git clone https://bitbucket.org/atlassian-docker/docker-atlassian-jira/src/master/ ./git-repo
 RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.git ./shared-components
+
+VOLUME ["${JIRA_HOME}"] # Must be declared after setting perms
 
 RUN cp ./git-repo/entrypoint.py /
 RUN cp ./git-repo/shutdown-wait.sh /
