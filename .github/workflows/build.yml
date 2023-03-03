@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch: 
     # __Future improvement:__
     # Allow definition of versions as parameter of manual run. 
@@ -61,8 +62,9 @@ jobs:
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build
+      - name: Build Release
         uses: docker/build-push-action@v2
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           builder: ${{ steps.buildx.outputs.name }}
           build-args: VERSION=${{ matrix.version }}
@@ -71,6 +73,21 @@ jobs:
           platforms: linux/arm64/v8,linux/amd64
           push: true
           tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:latest,ghcr.io/ls1intum/artemis-${{ matrix.name }}:${{ matrix.version }}
+          labels: "runnumber=${GITHUB_RUN_ID}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: Build PR
+        uses: docker/build-push-action@v2
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: VERSION=${{ matrix.version }}
+          context: ./${{ matrix.name }}
+          file: ./${{ matrix.name }}/Dockerfile
+          platforms: linux/arm64/v8,linux/amd64
+          push: true
+          tags: ghcr.io/ls1intum/artemis-${{ matrix.name }}:pr-${{ github.event.number }}
           labels: "runnumber=${GITHUB_RUN_ID}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
