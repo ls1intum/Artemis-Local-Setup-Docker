@@ -1,7 +1,9 @@
+# Adapted from https://bitbucket.org/atlassian-docker/docker-bamboo-agent-base/src/master/Dockerfile
+
 ARG BASE_IMAGE=eclipse-temurin:11
 FROM $BASE_IMAGE
 
-LABEL maintainer="dc-deployments@atlassian.com"
+LABEL maintainer="artemis.in@tum.de"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
 ENV APP_NAME                                bamboo_agent
@@ -12,13 +14,17 @@ ENV RUN_GID                                 2005
 
 ENV BAMBOO_AGENT_HOME                       /var/atlassian/application-data/bamboo-agent
 ENV BAMBOO_AGENT_INSTALL_DIR                /opt/atlassian/bamboo
+ENV KUBE_NUM_EXTRA_CONTAINERS               0
+ENV EXTRA_CONTAINERS_REGISTRATION_DIRECTORY /pbc/kube
+ENV DISABLE_AGENT_AUTO_CAPABILITY_DETECTION false
 
 WORKDIR $BAMBOO_AGENT_HOME
 
-CMD ["/entrypoint.py"]
-ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/usr/bin/tini", "--", "/entrypoint.py"]
+ENTRYPOINT ["/pre-launch.sh"]
 
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
          git git-lfs \
          openssh-client \
@@ -33,7 +39,8 @@ RUN mkdir -p ${MAVEN_HOME} \
     && ln -s ${MAVEN_HOME}/bin/mvn /usr/local/bin/mvn
 
 ARG VERSION=9.2.1
-ARG DOWNLOAD_URL=https://packages.atlassian.com/mvn/maven-atlassian-external/com/atlassian/bamboo/atlassian-bamboo-agent-installer/${VERSION}/atlassian-bamboo-agent-installer-${VERSION}.jar
+ARG BAMBOO_VERSION=${VERSION}
+ARG DOWNLOAD_URL=https://packages.atlassian.com/mvn/maven-atlassian-external/com/atlassian/bamboo/atlassian-bamboo-agent-installer/${BAMBOO_VERSION}/atlassian-bamboo-agent-installer-${BAMBOO_VERSION}.jar
 
 RUN git clone https://bitbucket.org/atlassian-docker/docker-bamboo-agent-base.git ./git-repo
 RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.git ./shared-components
@@ -60,6 +67,7 @@ RUN cp ./git-repo/entrypoint.py /
 RUN cp ./git-repo/probe-common.sh /
 RUN cp ./git-repo/probe-startup.sh /
 RUN cp ./git-repo/probe-readiness.sh /
+RUN cp ./git-repo/pre-launch.sh /
 RUN cp ./shared-components/image/entrypoint_helpers.py  /
 RUN cp -r ./shared-components/support                      /opt/atlassian/support
 RUN cp -r ./git-repo/config/                               /opt/atlassian/etc/
