@@ -30,13 +30,13 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: 8.13.1
+            version: 8.15.1
           - name: bamboo
-            version: 9.3.3
+            version: 9.3.5
           - name: bamboo-build-agent
-            version: 9.3.3
+            version: 9.3.5
           - name: jira
-            version: 9.4.3
+            version: 9.11.3
 
     runs-on: ubuntu-latest
     steps:
