@@ -6,7 +6,7 @@ FROM $BASE_IMAGE
 LABEL maintainer="artemis.in@tum.de"
 LABEL securitytxt="https://www.atlassian.com/.well-known/security.txt"
 
-ARG VERSION=8.8.2
+ARG VERSION=8.15.1
 ARG BITBUCKET_VERSION=${VERSION}
 
 ENV APP_NAME                                        bitbucket
@@ -29,9 +29,6 @@ WORKDIR $BITBUCKET_HOME
 # Expose HTTP and SSH ports
 EXPOSE 7990
 EXPOSE 7999
-
-CMD ["/entrypoint.py", "--log=INFO"]
-ENTRYPOINT ["/usr/bin/tini", "--"]
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -59,9 +56,6 @@ VOLUME ["${BITBUCKET_HOME}"]
 RUN cp ./git-repo/exec-bitbucket-node.sh ${BITBUCKET_INSTALL_DIR}/bin/
 RUN cp ./git-repo/_exec-webapp.sh ${BITBUCKET_INSTALL_DIR}/bin/
 
-RUN cp ./git-repo/bin/make-git.sh /
-RUN chmod 700 /make-git.sh
-RUN /make-git.sh
 RUN cp ./git-repo/bin/log4shell-vulnerability-fix.sh /
 RUN chmod 700 /log4shell-vulnerability-fix.sh
 RUN /log4shell-vulnerability-fix.sh
@@ -73,3 +67,6 @@ RUN cp ./git-repo/shutdown-wait.sh /
 
 RUN rm -rf ./git-repo
 RUN rm -rf ./shared-components
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/entrypoint.py", "--log=INFO"]
