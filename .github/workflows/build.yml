@@ -30,7 +30,7 @@ jobs:
       matrix:
         include:
           - name: bitbucket
-            version: 8.15.1
+            version: 8.16.2
           - name: bamboo
             version: 9.4.2
           - name: bamboo-build-agent
