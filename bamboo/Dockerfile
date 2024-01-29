@@ -61,6 +61,10 @@ RUN groupadd --gid ${RUN_GID} ${RUN_GROUP} \
     && sed -i -e 's/^JVM_\(.*\)_MEMORY="\(.*\)"$/: \${JVM_\1_MEMORY:=\2}/g' ${BAMBOO_INSTALL_DIR}/bin/setenv.sh \
     && sed -i -e 's/^JAVA_OPTS="/JAVA_OPTS="${JAVA_OPTS} /g' ${BAMBOO_INSTALL_DIR}/bin/setenv.sh
 
+# Since Bamboo 9.4.2 the JDBC H2 Driver is not included anymore
+ARG H2_VERSION=2.2.224
+ARG DOWNLOAD_H2_URL=https://search.maven.org/remotecontent?filepath=com/h2database/h2/${H2_VERSION}/h2-${H2_VERSION}.jar
+RUN curl -L --silent ${DOWNLOAD_H2_URL} -o ${BAMBOO_INSTALL_DIR}/lib/h2-${H2_VERSION}.jar
 
 RUN git clone https://bitbucket.org/atlassian-docker/docker-bamboo-server/src/master/ ./git-repo
 RUN git clone https://bitbucket.org/atlassian-docker/docker-shared-components.git ./shared-components
